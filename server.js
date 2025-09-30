@@ -33,7 +33,7 @@ server.on('connection', function connection(ws) {
             error: 'emptyMessage',
             username: jsondata.username,
           }
-          client.send(JSON.stringify(output));
+          ws.send(JSON.stringify(output));
         }
     };
     if (jsondata.type === 'connect') {
