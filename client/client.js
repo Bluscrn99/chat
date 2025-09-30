@@ -1,4 +1,4 @@
-let chatServer = "ws://127.0.0.1:6435";
+let chatServer = "ws://127.0.0.1:80";
 const usr = document.getElementById('usr');
 const msg = document.getElementById('msg');
 const sendbtn = document.getElementById('send');

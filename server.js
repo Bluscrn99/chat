@@ -1,6 +1,6 @@
 import { WebSocketServer } from 'ws';
 
-const server = new WebSocketServer({ port: 6435 });
+const server = new WebSocketServer({ port: 80 });
 
 server.on('connection', function connection(ws) {
   ws.on('message', function message(data) {
