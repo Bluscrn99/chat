@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <style>
+        textarea {
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+    <textarea id="ip" placeholder="ws://127.0.0.1:6435" rows="1" wrap="off"></textarea>
+    <p id="connectionstatus">Disconnected</p>
+    <textarea id="usr" placeholder="Username" rows="1" wrap="off"></textarea>
+    <br>
+    <textarea id="msg" placeholder="Message" rows="1" cols="50" wrap="off"></textarea>
+    <br>
+    <button id="send">Send</button>
+    <br>
+    <p id="erroroutput"></p>
+    <br>
+    <p id="chatoutput"></p>
+    <script src="./client.js"></script>
+</body>
+</html>
