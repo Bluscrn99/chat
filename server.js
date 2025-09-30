@@ -17,7 +17,7 @@ server.on('connection', function connection(ws) {
             data: jsondata.username + ': ' + jsondata.message,
         }
         server.clients.forEach(function(client) {
-          client.send(JSON.stringify(output));
+          ws.send(JSON.stringify(output));
         });
         if (jsondata.message.includes('<') || jsondata.username.includes('<')) {
           output = {
@@ -25,7 +25,7 @@ server.on('connection', function connection(ws) {
             error: 'invalidCharacters',
             username: jsondata.username,
           }
-          client.send(JSON.stringify(output));
+          ws.send(JSON.stringify(output));
         }
         if (jsondata.message == '' || jsondata.username == '') {
           output = {
