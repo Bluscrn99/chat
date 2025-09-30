@@ -16,23 +16,25 @@ server.on('connection', function connection(ws) {
             message: jsondata.message.trim(),
             data: jsondata.username + ': ' + jsondata.message,
         }
+        server.clients.forEach(function(client) {
+          client.send(JSON.stringify(output));
+        });
         if (jsondata.message.includes('<') || jsondata.username.includes('<')) {
           output = {
             type: 'error',
             error: 'invalidCharacters',
             username: jsondata.username,
           }
+          client.send(JSON.stringify(output));
         }
-        if (jsondata.message == '') {
+        if (jsondata.message == '' || jsondata.username == '') {
           output = {
             type: 'error',
             error: 'emptyMessage',
             username: jsondata.username,
           }
-        }
-        server.clients.forEach(function(client) {
           client.send(JSON.stringify(output));
-        });
+        }
     };
     if (jsondata.type === 'connect') {
         output = {
