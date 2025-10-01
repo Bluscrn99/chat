@@ -48,7 +48,7 @@ server.on('connection', function connection(ws) {
                 type: 'user_message',
                 username: messagedata.username,
                 message: filter.clean(messagedata.message.trim()),
-                data: messagedata.username + ': ' + filter.cleat(messagedata.message.trim()),
+                data: messagedata.username + ': ' + filter.clean(messagedata.message.trim()),
               }
               server.clients.forEach(function(client) {
                 client.send(JSON.stringify(output));                                 
