@@ -63,12 +63,14 @@ function connect() {
     console.log('[Server Message]');
     if (message.type == "user_message") {
       chatoutput.innerHTML = message.data + '<br>' + chatoutput.innerHTML;
-      if (message.username != usr.data) {
+      if (message.username != usr.value) {
         messageInSFX.currentTime = 0;
         messageInSFX.play();
+        console.log('msg in play')
       } else {
         messageOutSFX.currentTime = 0;
         messageOutSFX.play();
+        console.log('msg out play')
       }
     };
     if (message.type == "error") {
