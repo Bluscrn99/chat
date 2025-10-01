@@ -6,12 +6,12 @@ const chatoutput = document.getElementById('chatoutput');
 const erroroutput = document.getElementById('erroroutput');
 const serverstatus = document.getElementById('connectionstatus');
 const ipInput = document.getElementById('ip');
-const messageInSFX = document.getElementById('messageIn')
-const messageOutSFX = document.getElementById('messageOut')
-const connectSFX = document.getElementById('connect')
-const disconnectSFX = document.getElementById('disconnect')
-const connectbtn = document.getElementById('connectbtn')
-const soundtoggle = document.getElementById('soundtoggle')
+const messageInSFX = document.getElementById('messageIn');
+const messageOutSFX = document.getElementById('messageOut');
+const connectSFX = document.getElementById('connect');
+const disconnectSFX = document.getElementById('disconnect');
+const connectbtn = document.getElementById('connectbtn');
+const soundtoggle = document.getElementById('soundtoggle');
 let idontknowwhattonamethis = false;
 let websocket;
 let username;
@@ -37,7 +37,7 @@ sendbtn.style.display = 'none'
 serverstatus.style.display = 'none'
 
 connectbtn.addEventListener('click', function() {
-  if (usr.value != '' || usr.value != ' ') {
+  if (usr.value != '' && usr.value != ' ') {
     if (ipInput.value != '') {
       chatServer = ipInput.value;
     }
@@ -80,6 +80,7 @@ function connect() {
   websocket.addEventListener("open", (e) => {
     let message = {
       type: "connect",
+      username: "username",
     }
     idontknowwhattonamethis = false;
     if (soundtoggle.checked) {
@@ -141,7 +142,7 @@ function connect() {
       chatoutput.innerHTML = '<strong>' + '[SERVER] ' + message.message + '<br>' + '</strong>' + chatoutput.innerHTML;
     };
     if (message.type == "client_connect") {
-      chatoutput.innerHTML = '[CONNECTION] Someone entered the chat!' + '<br>' + chatoutput.innerHTML
+      chatoutput.innerHTML = '[CONNECTION]' + message.username + 'entered the chat!' + '<br>' + chatoutput.innerHTML
     }
   });
 };

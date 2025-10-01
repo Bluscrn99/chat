@@ -58,6 +58,7 @@ server.on('connection', function connection(ws) {
     } else if (messagedata.type == 'connect') {
         output = {
             type: 'client_connect',
+            username: messagedata.username,
         }
         server.clients.forEach(function(client) {
           client.send(JSON.stringify(output));
