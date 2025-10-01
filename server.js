@@ -36,7 +36,7 @@ server.on('connection', function connection(ws) {
             }
             ws.send(JSON.stringify(output));
             console.log('c')
-          } else if (messagedata.message.length < 1000) {
+          } else if (messagedata.message.length > 1000) {
             output = {
               type: 'error',
               error: 'messageTooLong',
