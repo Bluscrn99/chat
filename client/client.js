@@ -28,6 +28,9 @@ serverstatus.style.display = 'none'
 
 connectbtn.addEventListener('click', function() {
   if (usr.value != '' || usr.value != ' ') {
+    if (ipInput.value != '') {
+      chatServer = ipInput.value;
+    }
     username = usr.value;
     connect();
     connectbtn.style.display = 'none'
