@@ -9,6 +9,17 @@
             resize: none;
         }
     </style>
+    <style>
+        * {
+            font-family: 'Lucida Console', 'Courier New', 'Monaco', monospace;
+            background: rgb(100, 0, 255);
+            color: white;
+        }
+        button, textarea {
+            background: white;
+            color: black;
+        }
+    </style>
 </head>
 <body>
     <textarea id="ip" placeholder="ws://127.0.0.1:80" rows="1" cols="50" wrap="off"></textarea>
@@ -18,6 +29,7 @@
     <textarea id="msg" placeholder="Message" rows="1" cols="50" wrap="off"></textarea>
     <br>
     <button id="send">Send</button>
+    <button id="connectbtn">Connect</button>
     <br>
     <p id="erroroutput"></p>
     <br>

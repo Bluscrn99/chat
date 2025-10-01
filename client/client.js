@@ -10,14 +10,35 @@ const messageInSFX = document.getElementById('messageIn')
 const messageOutSFX = document.getElementById('messageOut')
 const connectSFX = document.getElementById('connect')
 const disconnectSFX = document.getElementById('disconnect')
+const connectbtn = document.getElementById('connectbtn')
 let idontknowwhattonamethis = false;
 let websocket;
+let username;
 let temp;
 let reconnectInterval;
 
 if (ipInput.value != '') {
   chatServer = ipInput.value;
 }
+
+msg.style.display = 'none'
+chatoutput.style.display = 'none'
+sendbtn.style.display = 'none'
+serverstatus.style.display = 'none'
+
+connectbtn.addEventListener('click', function() {
+  if (usr.value != '' || usr.value != ' ') {
+    username = usr.value;
+    connect();
+    connectbtn.style.display = 'none'
+    ipInput.style.display = 'none'
+    usr.style.display = 'none'
+    msg.style.display = 'block'
+    chatoutput.style.display = 'block'
+    sendbtn.style.display = 'block'
+    serverstatus.style.display = 'block'
+  }
+});
 
 function connect() {
   websocket = new WebSocket(chatServer);
@@ -68,7 +89,7 @@ function connect() {
     console.log('[Server Message]');
     if (message.type == "user_message") {
       chatoutput.innerHTML = message.data + '<br>' + chatoutput.innerHTML;
-      if (message.username != usr.value) {
+      if (message.username != username) {
         messageInSFX.currentTime = 0;
         messageInSFX.play();
         console.log('msg in play')
@@ -79,7 +100,7 @@ function connect() {
       }
     };
     if (message.type == "error") {
-      if (message.username == usr.value || message.error == 'invalidCharacters') {
+      if (message.username == username && message.error == 'invalidCharacters') {
         erroroutput.innerText = '[ERROR] Message or username contains disallowed characters'
         console.log('[ERROR] Message or username contains disallowed characters')
         setTimeout(function() {erroroutput.innerText = ''}, 5000);
@@ -104,7 +125,7 @@ function connect() {
 function sendMsg() {
   let message = {
     type: 'user_message',
-    username: usr.value,
+    username: username,
     message: msg.value,
   }
   console.log('play sound')
@@ -122,5 +143,3 @@ msg.addEventListener('keydown', function(e) {
     sendMsg();
   }
 });
-
-connect();
