@@ -24,21 +24,21 @@ server.on('connection', function connection(ws) {
             type: 'error',
             error: 'invalidCharacters',
             username: messagedata.username,
-          }
+          };
           ws.send(JSON.stringify(output));
         } else if (messagedata.message == '' || messagedata.username == '') {
             output = {
               type: 'error',
               error: 'emptyMessage',
               username: messagedata.username,
-            }
+            };
             ws.send(JSON.stringify(output));
           } else if (messagedata.message.length > 1000) {
             output = {
               type: 'error',
               error: 'messageTooLong',
               username: messagedata.username,
-            }
+            };
             ws.send(JSON.stringify(output));
           } else {
               output = {
@@ -50,7 +50,7 @@ server.on('connection', function connection(ws) {
               server.clients.forEach(function(client) {
                 client.send(JSON.stringify(output));                                 
               });
-            }
+            };
     } else if (messagedata.type == 'connect') {
         ws.username = messagedata.username;
         output = {
@@ -60,7 +60,7 @@ server.on('connection', function connection(ws) {
         server.clients.forEach(function(client) {
           client.send(JSON.stringify(output));
         });
-    }
+    };
   });
   ws.on('close', function message(data) {
     output = {
@@ -68,9 +68,9 @@ server.on('connection', function connection(ws) {
       username: ws.username,
     }
     server.clients.forEach(function(client) {
-      client.send(JSON.stringify(output));
+        client.send(JSON.stringify(output));
     });
-  }
+  });
 });
 
 process.on('SIGINT', (code) => {
