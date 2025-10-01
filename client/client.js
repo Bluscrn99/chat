@@ -61,7 +61,15 @@ function connect() {
     if (message.type == "error") {
       if (message.username == usr.value || message.error == 'invalidCharacters') {
         erroroutput.innerText = '[ERROR] Message or username contains disallowed characters'
+        console.log('[ERROR] Message or username contains disallowed characters')
         setTimeout(function() {erroroutput.innerText = ''}, 5000);
+      } else if (message.error == 'invalidJSON') {
+        erroroutput.innertext = '[ERROR] Client sent malformed JSON'
+        console.log('[ERROR] Client sent malformed JSON')
+        setTimeout(function() {erroroutput.innerText = ''}, 5000);
+      } else {
+        erroroutput.innertext = '[ERROR] Unknown Error'
+        console.log('[ERROR] Unknown Error')
       }
     };
     if (message.type == "server_message") {

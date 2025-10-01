@@ -8,7 +8,14 @@ server.on('connection', function connection(ws) {
     let messagedata;
     let output;
     console.log('[Client Message]', data);
-    messagedata = JSON.parse(data);
+    try {
+      messagedata = JSON.parse(data);
+    } catch(e) {ws.send(JSON.stringify({ 
+      type: 'error', 
+      error: 'invalidJSON'
+    }));
+    return;
+  }
     if (messagedata.type === 'user_message') {
         if (messagedata.message.includes('<') || messagedata.username.includes('<')) {
           output = {
