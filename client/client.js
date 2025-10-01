@@ -6,6 +6,10 @@ const chatoutput = document.getElementById('chatoutput');
 const erroroutput = document.getElementById('erroroutput');
 const serverstatus = document.getElementById('connectionstatus');
 const ipInput = document.getElementById('ip');
+const messageInSFX = document.getElementById('messageIn')
+const messageOutSFX = document.getElementById('messageOut')
+const connectSFX = document.getElementById('connect')
+const disconnectSFX = document.getElementById('disconnect')
 let websocket;
 let temp;
 let reconnectInterval;
@@ -42,6 +46,7 @@ function connect() {
     let message = {
       type: "connect",
     }
+    connectSFX.play();
     console.log('Connected!')
     websocket.send(JSON.stringify(message))
     serverstatus.innerText = 'Connected';
@@ -49,6 +54,7 @@ function connect() {
 
   websocket.addEventListener("close", function(e) {
     serverstatus.innerText = 'Disconnected';
+    disconnectSFX.play();
   });
 
 
@@ -57,13 +63,20 @@ function connect() {
     console.log('[Server Message]');
     if (message.type == "user_message") {
       chatoutput.innerHTML = message.data + '<br>' + chatoutput.innerHTML;
+      if (message.username == usr.data) {
+        messageInSFX.currentTime = 0;
+        messageInSFX.play();
+      } else {
+        messageOutSFX.currentTime = 0;
+        messageOutSFX.play();
+      }
     };
     if (message.type == "error") {
       if (message.username == usr.value || message.error == 'invalidCharacters') {
         erroroutput.innerText = '[ERROR] Message or username contains disallowed characters'
         console.log('[ERROR] Message or username contains disallowed characters')
         setTimeout(function() {erroroutput.innerText = ''}, 5000);
-      } else if (message.error == 'invalidJSON') {
+      } else if (message.error == 'invalidJSON') {;
         erroroutput.innertext = '[ERROR] Client sent malformed JSON'
         console.log('[ERROR] Client sent malformed JSON')
         setTimeout(function() {erroroutput.innerText = ''}, 5000);
@@ -87,6 +100,7 @@ function sendMsg() {
     username: usr.value,
     message: msg.value,
   }
+  console.log('play sound')
   msg.value = '';
   websocket.send(JSON.stringify(message));
 };
