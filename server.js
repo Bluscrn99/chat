@@ -1,5 +1,7 @@
 import { WebSocketServer } from 'ws';
+import { Filter } from 'bad-words';
 
+const filter = new Filter();
 const serverport = process.env.PORT || 80;
 const server = new WebSocketServer({ port: serverport });
 
@@ -34,11 +36,18 @@ server.on('connection', function connection(ws) {
             }
             ws.send(JSON.stringify(output));
             console.log('c')
+          } else if (messagedata.message.length < 1000) {
+            output = {
+              type: 'error',
+              error: 'messageTooLong',
+              username: messagedata.username,
+            }
+            ws.send(JSON.stringify(output));
           } else {
               output = {
                 type: 'user_message',
                 username: messagedata.username,
-                message: messagedata.message.trim(),
+                message: filter.clean(messagedata.message.trim()),
                 data: messagedata.username + ': ' + messagedata.message,
               }
               server.clients.forEach(function(client) {

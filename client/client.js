@@ -11,11 +11,14 @@ const messageOutSFX = document.getElementById('messageOut')
 const connectSFX = document.getElementById('connect')
 const disconnectSFX = document.getElementById('disconnect')
 const connectbtn = document.getElementById('connectbtn')
+const soundtoggle = document.getElementById('soundtoggle')
 let idontknowwhattonamethis = false;
 let websocket;
 let username;
 let temp;
 let reconnectInterval;
+
+soundtoggle.checked = true;
 
 if (ipInput.value != '') {
   chatServer = ipInput.value;
@@ -72,7 +75,9 @@ function connect() {
       type: "connect",
     }
     idontknowwhattonamethis = false;
-    connectSFX.play();
+    if (soundtoggle.checked) {
+      connectSFX.play();
+    }
     console.log('Connected!')
     websocket.send(JSON.stringify(message))
     serverstatus.innerText = 'Connected';
@@ -80,7 +85,7 @@ function connect() {
 
   websocket.addEventListener("close", function(e) {
     serverstatus.innerText = 'Disconnected';
-    if (idontknowwhattonamethis == false) {
+    if (idontknowwhattonamethis == false && soundtoggle.checked) {
       disconnectSFX.play();
     }
     idontknowwhattonamethis = true;
@@ -93,12 +98,16 @@ function connect() {
     if (message.type == "user_message") {
       chatoutput.innerHTML = message.data + '<br>' + chatoutput.innerHTML;
       if (message.username != username) {
-        messageInSFX.currentTime = 0;
-        messageInSFX.play();
+        if (soundtoggle.checked) {
+          messageInSFX.currentTime = 0;
+          messageInSFX.play();
+        }
         console.log('msg in play')
       } else {
-        messageOutSFX.currentTime = 0;
-        messageOutSFX.play();
+        if (soundtoggle.checked) {
+          messageOutSFX.currentTime = 0;
+          messageOutSFX.play();
+        }
         console.log('msg out play')
       }
     };
@@ -111,7 +120,12 @@ function connect() {
         erroroutput.innertext = '[ERROR] Client sent malformed JSON'
         console.log('[ERROR] Client sent malformed JSON')
         setTimeout(function() {erroroutput.innerText = ''}, 5000);
-      } else {
+      } else if (message.error == 'messageTooLong') {
+        erroroutput.innertext = '[ERROR] Client sent message too long'
+        console.log('[ERROR] Client sent message too long')
+        setTimeout(function() {erroroutput.innerText = ''}, 5000);
+      } 
+      else {
         erroroutput.innertext = '[ERROR] Unknown Error'
         console.log('[ERROR] Unknown Error')
       }
