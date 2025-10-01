@@ -19,7 +19,6 @@ server.on('connection', function connection(ws) {
     return;
   }
     if (messagedata.type == 'user_message') {
-        console.log('a')
         if (messagedata.message.includes('<') || messagedata.username.includes('<')) {
           output = {
             type: 'error',
@@ -27,7 +26,6 @@ server.on('connection', function connection(ws) {
             username: messagedata.username,
           }
           ws.send(JSON.stringify(output));
-          console.log('b')
         } else if (messagedata.message == '' || messagedata.username == '') {
             output = {
               type: 'error',
@@ -35,7 +33,6 @@ server.on('connection', function connection(ws) {
               username: messagedata.username,
             }
             ws.send(JSON.stringify(output));
-            console.log('c')
           } else if (messagedata.message.length > 1000) {
             output = {
               type: 'error',
@@ -53,9 +50,9 @@ server.on('connection', function connection(ws) {
               server.clients.forEach(function(client) {
                 client.send(JSON.stringify(output));                                 
               });
-              console.log('c')
             }
     } else if (messagedata.type == 'connect') {
+        ws.username = messagedata.username;
         output = {
             type: 'client_connect',
             username: messagedata.username,
@@ -63,9 +60,17 @@ server.on('connection', function connection(ws) {
         server.clients.forEach(function(client) {
           client.send(JSON.stringify(output));
         });
-        console.log('d')
     }
   });
+  ws.on('close', function message(data) {
+    output = {
+      type: 'client_disconnect',
+      username: ws.username,
+    }
+    server.clients.forEach(function(client) {
+      client.send(JSON.stringify(output));
+    });
+  }
 });
 
 process.on('SIGINT', (code) => {

@@ -80,7 +80,7 @@ function connect() {
   websocket.addEventListener("open", (e) => {
     let message = {
       type: "connect",
-      username: "username",
+      username: username,
     }
     idontknowwhattonamethis = false;
     if (soundtoggle.checked) {
@@ -144,7 +144,10 @@ function connect() {
     if (message.type == "client_connect") {
       chatoutput.innerHTML = '[CONNECTION] ' + message.username + ' entered the chat!' + '<br>' + chatoutput.innerHTML
     }
-  });
+    if (message.type == "client_disconnect") {
+      chatoutput.innerHTML = '[CONNECTION] ' + message.username + ' left the chat' + '<br>' + chatoutput.innerHTML
+    }
+   });
 };
 
 function sendMsg() {
