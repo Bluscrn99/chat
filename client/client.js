@@ -10,6 +10,7 @@ const messageInSFX = document.getElementById('messageIn')
 const messageOutSFX = document.getElementById('messageOut')
 const connectSFX = document.getElementById('connect')
 const disconnectSFX = document.getElementById('disconnect')
+let idontknowwhattonamethis = false;
 let websocket;
 let temp;
 let reconnectInterval;
@@ -38,7 +39,7 @@ function connect() {
       connect();
       return;
     } else if (websocket.readyState === WebSocket.CONNECTING) {
-      serverstatus.innerText = 'Connecting...';
+      serverstatus.innerText = 'Trying Connection...';
     };
   }, 2500);
 
@@ -46,6 +47,7 @@ function connect() {
     let message = {
       type: "connect",
     }
+    idontknowwhattonamethis = false;
     connectSFX.play();
     console.log('Connected!')
     websocket.send(JSON.stringify(message))
@@ -54,7 +56,10 @@ function connect() {
 
   websocket.addEventListener("close", function(e) {
     serverstatus.innerText = 'Disconnected';
-    disconnectSFX.play();
+    if (idontknowwhattonamethis == false) {
+      disconnectSFX.play();
+    }
+    idontknowwhattonamethis = true;
   });
 
 
