@@ -10,15 +10,6 @@ server.on('connection', function connection(ws) {
     console.log('[Client Message]', data);
     jsondata = JSON.parse(data);
     if (jsondata.type === 'user_message') {
-        output = {
-            type: 'user_message',
-            username: jsondata.username,
-            message: jsondata.message.trim(),
-            data: jsondata.username + ': ' + jsondata.message,
-        }
-        server.clients.forEach(function(client) {
-          ws.send(JSON.stringify(output));
-        });
         if (jsondata.message.includes('<') || jsondata.username.includes('<')) {
           output = {
             type: 'error',
@@ -41,7 +32,17 @@ server.on('connection', function connection(ws) {
         server.clients.forEach(function(client) {
           client.send(JSON.stringify(output));
         });
-    };
+    } else {
+      output = {
+        type: 'user_message',
+        username: jsondata.username,
+        message: jsondata.message.trim(),
+        data: jsondata.username + ': ' + jsondata.message,
+      }
+      server.clients.forEach(function(client) {
+        ws.send(JSON.stringify(output));
+      });
+    }
   });
 });
 
