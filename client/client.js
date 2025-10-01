@@ -63,7 +63,7 @@ function connect() {
     console.log('[Server Message]');
     if (message.type == "user_message") {
       chatoutput.innerHTML = message.data + '<br>' + chatoutput.innerHTML;
-      if (message.username == usr.data) {
+      if (message.username != usr.data) {
         messageInSFX.currentTime = 0;
         messageInSFX.play();
       } else {
