@@ -142,7 +142,7 @@ function connect() {
       chatoutput.innerHTML = '<strong>' + '[SERVER] ' + message.message + '<br>' + '</strong>' + chatoutput.innerHTML;
     };
     if (message.type == "client_connect") {
-      chatoutput.innerHTML = '[CONNECTION]' + message.username + 'entered the chat!' + '<br>' + chatoutput.innerHTML
+      chatoutput.innerHTML = '[CONNECTION] ' + message.username + ' entered the chat!' + '<br>' + chatoutput.innerHTML
     }
   });
 };
