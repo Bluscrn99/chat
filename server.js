@@ -26,8 +26,7 @@ server.on('connection', function connection(ws) {
             username: jsondata.username,
           }
           ws.send(JSON.stringify(output));
-        }
-        if (jsondata.message == '' || jsondata.username == '') {
+        } else if (jsondata.message == '' || jsondata.username == '') {
           output = {
             type: 'error',
             error: 'emptyMessage',
@@ -35,8 +34,7 @@ server.on('connection', function connection(ws) {
           }
           ws.send(JSON.stringify(output));
         }
-    };
-    if (jsondata.type === 'connect') {
+    } else if (jsondata.type === 'connect') {
         output = {
             type: 'client_connect',
         }
