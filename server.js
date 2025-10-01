@@ -40,7 +40,7 @@ server.on('connection', function connection(ws) {
         data: jsondata.username + ': ' + jsondata.message,
       }
       server.clients.forEach(function(client) {
-        ws.send(JSON.stringify(output));
+        client.send(JSON.stringify(output));
       });
     }
   });
