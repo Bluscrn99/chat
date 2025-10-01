@@ -16,7 +16,8 @@ server.on('connection', function connection(ws) {
     }));
     return;
   }
-    if (messagedata.type === 'user_message') {
+    if (messagedata.type == 'user_message') {
+        console.log('a')
         if (messagedata.message.includes('<') || messagedata.username.includes('<')) {
           output = {
             type: 'error',
@@ -24,6 +25,7 @@ server.on('connection', function connection(ws) {
             username: messagedata.username,
           }
           ws.send(JSON.stringify(output));
+          console.log('b')
         } else if (messagedata.message == '' || messagedata.username == '') {
             output = {
               type: 'error',
@@ -31,24 +33,27 @@ server.on('connection', function connection(ws) {
               username: messagedata.username,
             }
             ws.send(JSON.stringify(output));
-          }
-    } else if (messagedata.type === 'connect') {
+            console.log('c')
+          } else {
+              output = {
+                type: 'user_message',
+                username: messagedata.username,
+                message: messagedata.message.trim(),
+                data: messagedata.username + ': ' + messagedata.message,
+              }
+              server.clients.forEach(function(client) {
+                client.send(JSON.stringify(output));                                 
+              });
+              console.log('c')
+            }
+    } else if (messagedata.type == 'connect') {
         output = {
             type: 'client_connect',
         }
         server.clients.forEach(function(client) {
           client.send(JSON.stringify(output));
         });
-    } else {
-        output = {
-          type: 'user_message',
-          username: messagedata.username,
-          message: messagedata.message.trim(),
-          data: messagedata.username + ': ' + messagedata.message,
-        }
-        server.clients.forEach(function(client) {
-          client.send(JSON.stringify(output));                                 
-        });
+        console.log('d')
     }
   });
 });
