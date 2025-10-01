@@ -18,6 +18,13 @@ let username;
 let temp;
 let reconnectInterval;
 
+usr.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+  }
+});
+
+
 soundtoggle.checked = true;
 
 if (ipInput.value != '') {
