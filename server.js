@@ -4,6 +4,8 @@ import { Filter } from 'bad-words';
 const filter = new Filter();
 const serverport = process.env.PORT || 80;
 const server = new WebSocketServer({ port: serverport });
+let connectedUsernames = [];
+import sanitizeHtml from 'sanitize-html';
 
 server.on('connection', function connection(ws) {
   ws.on('message', function message(data) {
@@ -19,20 +21,28 @@ server.on('connection', function connection(ws) {
     return;
   }
     if (messagedata.type == 'user_message') {
+        if (!connectedUsernames.includes(messagedata.username)) {
+          output = {
+            type: 'error',
+            error: 'invalidUsername',
+          };
+          ws.send(JSON.stringify(output));
+          return;
+        }
         if (messagedata.message.includes('<') || messagedata.username.includes('<')) {
           output = {
             type: 'error',
             error: 'invalidCharacters',
-            username: messagedata.username,
           };
           ws.send(JSON.stringify(output));
+          return;
         } else if (messagedata.message == '' || messagedata.username == '') {
             output = {
               type: 'error',
               error: 'emptyMessage',
-              username: messagedata.username,
             };
             ws.send(JSON.stringify(output));
+            return;
           } else if (messagedata.message.length > 1000) {
             output = {
               type: 'error',
@@ -40,33 +50,49 @@ server.on('connection', function connection(ws) {
               username: messagedata.username,
             };
             ws.send(JSON.stringify(output));
+            return;
           } else {
+              let timestamp = new Date().toUTCString();
               output = {
                 type: 'user_message',
                 username: messagedata.username,
                 message: filter.clean(messagedata.message.trim()),
-                data: messagedata.username + ': ' + filter.clean(messagedata.message.trim()),
+                data: sanitizeHtml(messagedata.username + ': ' + filter.clean(messagedata.message.trim()), {allowedTags:['b', 'i'],allowedAttributes:{}}),
+                timestamp: timestamp,
               }
               server.clients.forEach(function(client) {
                 client.send(JSON.stringify(output));                                 
               });
-            };
+              return;
+          };
     } else if (messagedata.type == 'connect') {
-        ws.username = messagedata.username;
-        output = {
-            type: 'client_connect',
-            username: messagedata.username,
+        if (connectedUsernames.includes(messagedata.username)) {
+          output = {
+            type: 'error',
+            error: 'usernameTaken',
+          }
+          ws.send(JSON.stringify(output));
+          ws.close();
         }
-        server.clients.forEach(function(client) {
-          client.send(JSON.stringify(output));
-        });
+        else {
+          output = {
+              type: 'client_connect',
+              username: messagedata.username,
+          }
+          ws.username = messagedata.username;
+          connectedUsernames.push(ws.username);
+          server.clients.forEach(function(client) {
+            client.send(JSON.stringify(output));                              
+          });
+        }
     };
   });
   ws.on('close', function message(data) {
-    output = {
+    let output = {
       type: 'client_disconnect',
       username: ws.username,
     }
+    connectedUsernames = connectedUsernames.filter(username => username !== ws.username);
     server.clients.forEach(function(client) {
         client.send(JSON.stringify(output));
     });

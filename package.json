@@ -12,6 +12,10 @@
   "license": "ISC",
   "dependencies": {
     "bad-words": "^4.0.0",
+    "sanitize-html": "^2.17.0",
     "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.6.2"
   }
 }

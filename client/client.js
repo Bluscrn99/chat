@@ -104,7 +104,10 @@ function connect() {
     let message = JSON.parse(rawmessage.data);
     console.log('[Server Message]');
     if (message.type == "user_message") {
-      chatoutput.innerHTML = message.data + '<br>' + chatoutput.innerHTML;
+      const messagediv = document.createElement("div");
+      messagediv.textContent = message.username + ': ' + message.message;
+      messagediv.title = message.timestamp;
+      chatoutput.prepend(messagediv);
       if (message.username != username) {
         if (soundtoggle.checked) {
           messageInSFX.currentTime = 0;
@@ -120,21 +123,40 @@ function connect() {
       }
     };
     if (message.type == "error") {
-      if (message.username == username && message.error == 'invalidCharacters') {
+      if (message.error == 'invalidCharacters') {
         erroroutput.innerText = '[ERROR] Message or username contains disallowed characters'
         console.log('[ERROR] Message or username contains disallowed characters')
         setTimeout(function() {erroroutput.innerText = ''}, 5000);
       } else if (message.error == 'invalidJSON') {;
-        erroroutput.innertext = '[ERROR] Client sent malformed JSON'
+        erroroutput.innerText = '[ERROR] Client sent malformed JSON'
         console.log('[ERROR] Client sent malformed JSON')
         setTimeout(function() {erroroutput.innerText = ''}, 5000);
       } else if (message.error == 'messageTooLong') {
-        erroroutput.innertext = '[ERROR] Client sent message too long'
+        erroroutput.innerText = '[ERROR] Client sent message too long'
         console.log('[ERROR] Client sent message too long')
         setTimeout(function() {erroroutput.innerText = ''}, 5000);
-      } 
-      else {
-        erroroutput.innertext = '[ERROR] Unknown Error'
+      } else if (message.error == 'usernameTaken') {
+        erroroutput.innerText = '[ERROR] Username taken'
+        console.log('[ERROR] Username taken')
+        setTimeout(function() {erroroutput.innerText = ''}, 5000);
+        msg.style.display = 'none'
+        chatoutput.style.display = 'none'
+        sendbtn.style.display = 'none'
+        serverstatus.style.display = 'none'
+        connectbtn.style.display = 'inline-block'
+        ipInput.style.display = 'inline-block'
+        usr.style.display = 'inline-block'
+        websocket.close();
+        websocket = null;
+        username = null;
+        if (reconnectInterval) {
+          clearInterval(reconnectInterval);
+          reconnectInterval = null;
+        }
+      }
+        
+        else {
+        erroroutput.innerText = '[ERROR] Unknown Error'
         console.log('[ERROR] Unknown Error')
       }
     };
