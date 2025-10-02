@@ -72,9 +72,10 @@ server.on('connection', function connection(ws) {
             error: 'usernameTaken',
           }
           ws.send(JSON.stringify(output));
-          ws.close();
+          
         }
         else {
+          messagedata.username = sanitizeHtml(messagedata.username), {allowedTags:[],allowedAttributes:{}};
           output = {
               type: 'client_connect',
               username: messagedata.username,
