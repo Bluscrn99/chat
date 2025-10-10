@@ -72,7 +72,27 @@ server.on('connection', function connection(ws) {
             error: 'usernameTaken',
           }
           ws.send(JSON.stringify(output));
-          
+        }
+        else if (messagedata.username.length > 30) {
+          output = {
+            type: 'error',
+            error: 'usernameTooLong'
+          }
+          ws.send(JSON.stringify(output));
+        }
+        else if (messagedata.username.length < 3) {
+          output = {
+            type: 'error',
+            error: 'usernameTooShort'
+          }
+          ws.send(JSON.stringify(output));
+        }
+        else if (messagedata.username != filter.clean(messagedata.username)) {
+          output = {
+            type: 'error',
+            error: 'usernameHitFilter'
+          }
+          ws.send(JSON.stringify(output));
         }
         else {
           messagedata.username = sanitizeHtml(messagedata.username), {allowedTags:[],allowedAttributes:{}};

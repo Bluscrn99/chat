@@ -153,11 +153,24 @@ function connect() {
           clearInterval(reconnectInterval);
           reconnectInterval = null;
         }
-      }
-        
-        else {
+      } else if (message.error == 'usernameTooLong') {
+        erroroutput.innerText = '[ERROR] Username Too Long'
+        console.log('[ERROR] Username Too Long')
+        setTimeout(function() {erroroutput.innerText = ''}, 5000);
+      } else if (message.error == 'usernameTooShort') {
+        erroroutput.innerText = '[ERROR] Username Too Short'
+        console.log('[ERROR] Username Too Long')
+        setTimeout(function() {erroroutput.innerText = ''}, 5000);
+      } else if (message.error == 'usernameHitFilter') {
+        erroroutput.innerText = '[ERROR] Username Hit Profanity Filter'
+        console.log('[ERROR] Username Hit Profanity Filter')
+        setTimeout(function() {erroroutput.innerText = ''}, 5000);
+      } else if (message.error == 'emptyMessage') {
+        // do nothing, empty message probably shouldn't be an error.
+      } else {
         erroroutput.innerText = '[ERROR] Unknown Error'
         console.log('[ERROR] Unknown Error')
+        setTimeout(function() {erroroutput.innerText = ''}, 5000);
       }
     };
     if (message.type == "server_message") {
