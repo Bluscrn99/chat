@@ -1,4 +1,4 @@
-const version = 1;
+const version = 2;
 
 
 
@@ -108,7 +108,8 @@ function connect() {
   websocket.addEventListener("message", function(rawmessage) {
     let message = JSON.parse(rawmessage.data);
     if (message.version != version) {
-      csmismatch.innerText = 'Client/server version mismatch! Expect problems!'
+      csmismatch.innerText = 'Server version is ' + message.version + ', client version is ' + version;
+      return
     }
     if (message.type == "user_message") {
       const messagediv = document.createElement("div");
