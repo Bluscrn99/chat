@@ -1,3 +1,7 @@
+const version = 1;
+
+
+
 let chatServer = "ws://127.0.0.1:80";
 const usr = document.getElementById('usr');
 const msg = document.getElementById('msg');
@@ -12,6 +16,7 @@ const connectSFX = document.getElementById('connect');
 const disconnectSFX = document.getElementById('disconnect');
 const connectbtn = document.getElementById('connectbtn');
 const soundtoggle = document.getElementById('soundtoggle');
+const csmismatch = document.getElementById('csmismatch');
 let idontknowwhattonamethis = false;
 let websocket;
 let username;
@@ -102,7 +107,9 @@ function connect() {
 
   websocket.addEventListener("message", function(rawmessage) {
     let message = JSON.parse(rawmessage.data);
-    console.log('[Server Message]');
+    if (message.version != version) {
+      csmismatch.innerText = 'Client/server version mismatch! Expect problems!'
+    }
     if (message.type == "user_message") {
       const messagediv = document.createElement("div");
       messagediv.textContent = message.username + ': ' + message.message;

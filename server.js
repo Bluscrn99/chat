@@ -1,3 +1,7 @@
+const version = 1;
+
+
+
 import { WebSocketServer } from 'ws';
 import { Filter } from 'bad-words';
 
@@ -16,7 +20,8 @@ server.on('connection', function connection(ws) {
       messagedata = JSON.parse(data);
     } catch(e) {ws.send(JSON.stringify({ 
       type: 'error', 
-      error: 'invalidJSON'
+      error: 'invalidJSON',
+      version: version,
     }));
     return;
   }
@@ -25,6 +30,7 @@ server.on('connection', function connection(ws) {
           output = {
             type: 'error',
             error: 'invalidUsername',
+            version: version,
           };
           ws.send(JSON.stringify(output));
           return;
@@ -33,6 +39,7 @@ server.on('connection', function connection(ws) {
           output = {
             type: 'error',
             error: 'invalidCharacters',
+            version: version,
           };
           ws.send(JSON.stringify(output));
           return;
@@ -40,6 +47,7 @@ server.on('connection', function connection(ws) {
             output = {
               type: 'error',
               error: 'emptyMessage',
+              version: version,
             };
             ws.send(JSON.stringify(output));
             return;
@@ -48,6 +56,7 @@ server.on('connection', function connection(ws) {
               type: 'error',
               error: 'messageTooLong',
               username: messagedata.username,
+              version: version,
             };
             ws.send(JSON.stringify(output));
             return;
@@ -59,6 +68,7 @@ server.on('connection', function connection(ws) {
                 message: filter.clean(messagedata.message.trim()),
                 data: sanitizeHtml(messagedata.username + ': ' + filter.clean(messagedata.message.trim()), {allowedTags:['b', 'i'],allowedAttributes:{}}),
                 timestamp: timestamp,
+                version: version,
               }
               server.clients.forEach(function(client) {
                 client.send(JSON.stringify(output));                                 
@@ -70,27 +80,31 @@ server.on('connection', function connection(ws) {
           output = {
             type: 'error',
             error: 'usernameTaken',
+            version: version,
           }
           ws.send(JSON.stringify(output));
         }
         else if (messagedata.username.length > 30) {
           output = {
             type: 'error',
-            error: 'usernameTooLong'
+            error: 'usernameTooLong',
+            version: version,
           }
           ws.send(JSON.stringify(output));
         }
         else if (messagedata.username.length < 3) {
           output = {
             type: 'error',
-            error: 'usernameTooShort'
+            error: 'usernameTooShort',
+            version: version,
           }
           ws.send(JSON.stringify(output));
         }
         else if (messagedata.username != filter.clean(messagedata.username)) {
           output = {
             type: 'error',
-            error: 'usernameHitFilter'
+            error: 'usernameHitFilter',
+            version: version,
           }
           ws.send(JSON.stringify(output));
         }
@@ -99,6 +113,7 @@ server.on('connection', function connection(ws) {
           output = {
               type: 'client_connect',
               username: messagedata.username,
+              version: version,
           }
           ws.username = messagedata.username;
           connectedUsernames.push(ws.username);
@@ -112,6 +127,7 @@ server.on('connection', function connection(ws) {
     let output = {
       type: 'client_disconnect',
       username: ws.username,
+      version: version,
     }
     connectedUsernames = connectedUsernames.filter(username => username !== ws.username);
     server.clients.forEach(function(client) {
@@ -123,7 +139,8 @@ server.on('connection', function connection(ws) {
 process.on('SIGINT', (code) => {
   let output = {
     type: 'server_message',
-    message: 'Server closing D:'
+    message: 'Server closing D:',
+    version: version,
   }
   server.clients.forEach(client => {
     client.send(JSON.stringify(output));
