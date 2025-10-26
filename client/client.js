@@ -17,6 +17,8 @@ const disconnectSFX = document.getElementById('disconnect');
 const connectbtn = document.getElementById('connectbtn');
 const soundtoggle = document.getElementById('soundtoggle');
 const csmismatch = document.getElementById('csmismatch');
+const criticalerrorSFX = document.getElementById('criticalerror');
+const whatthehellSFX = document.getElementById('whatthehell');
 let idontknowwhattonamethis = false;
 let websocket;
 let username;
@@ -36,27 +38,52 @@ if (ipInput.value != '') {
   chatServer = ipInput.value;
 }
 
-msg.style.display = 'none'
-chatoutput.style.display = 'none'
-sendbtn.style.display = 'none'
-serverstatus.style.display = 'none'
+msg.style.display = 'none';
+chatoutput.style.display = 'none';
+sendbtn.style.display = 'none';
+serverstatus.style.display = 'none';
 
 connectbtn.addEventListener('click', function() {
+  if (!navigator.onLine) {
+    csmismatch.innerText = `connect to the internet`;
+    criticalerrorSFX.play();
+    connectbtn.style.display = 'none';
+    ipInput.style.display = 'none';
+    usr.style.display = 'none';
+    return;
+  }
   if (usr.value != '' && usr.value != ' ') {
     if (ipInput.value != '') {
       chatServer = ipInput.value;
     }
     username = usr.value;
     connect();
-    connectbtn.style.display = 'none'
-    ipInput.style.display = 'none'
-    usr.style.display = 'none'
-    msg.style.display = 'block'
-    chatoutput.style.display = 'block'
-    sendbtn.style.display = 'block'
-    serverstatus.style.display = 'block'
+    connectbtn.style.display = 'none';
+    ipInput.style.display = 'none';
+    usr.style.display = 'none';
+    msg.style.display = 'block';
+    chatoutput.style.display = 'block';
+    sendbtn.style.display = 'block';
+    serverstatus.style.display = 'block';
   }
 });
+
+function openConnectScreen() {
+  msg.style.display = 'none'
+  chatoutput.style.display = 'none'
+  sendbtn.style.display = 'none'
+  serverstatus.style.display = 'none'
+  connectbtn.style.display = 'inline-block'
+  ipInput.style.display = 'inline-block'
+  usr.style.display = 'inline-block'
+  websocket.close();
+  websocket = null;
+  username = null;
+  if (reconnectInterval) {
+    clearInterval(reconnectInterval);
+    reconnectInterval = null;
+  }
+};
 
 function connect() {
   websocket = new WebSocket(chatServer);
@@ -147,32 +174,22 @@ function connect() {
         erroroutput.innerText = '[ERROR] Username taken'
         console.log('[ERROR] Username taken')
         setTimeout(function() {erroroutput.innerText = ''}, 5000);
-        msg.style.display = 'none'
-        chatoutput.style.display = 'none'
-        sendbtn.style.display = 'none'
-        serverstatus.style.display = 'none'
-        connectbtn.style.display = 'inline-block'
-        ipInput.style.display = 'inline-block'
-        usr.style.display = 'inline-block'
-        websocket.close();
-        websocket = null;
-        username = null;
-        if (reconnectInterval) {
-          clearInterval(reconnectInterval);
-          reconnectInterval = null;
-        }
+        openConnectScreen();
       } else if (message.error == 'usernameTooLong') {
         erroroutput.innerText = '[ERROR] Username Too Long'
         console.log('[ERROR] Username Too Long')
         setTimeout(function() {erroroutput.innerText = ''}, 5000);
+        openConnectScreen();
       } else if (message.error == 'usernameTooShort') {
         erroroutput.innerText = '[ERROR] Username Too Short'
         console.log('[ERROR] Username Too Long')
         setTimeout(function() {erroroutput.innerText = ''}, 5000);
+        openConnectScreen();
       } else if (message.error == 'usernameHitFilter') {
         erroroutput.innerText = '[ERROR] Username Hit Profanity Filter'
         console.log('[ERROR] Username Hit Profanity Filter')
         setTimeout(function() {erroroutput.innerText = ''}, 5000);
+        openConnectScreen();
       } else if (message.error == 'emptyMessage') {
         // do nothing, empty message probably shouldn't be an error.
       } else {
