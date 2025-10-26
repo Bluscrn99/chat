@@ -108,12 +108,12 @@ function connect() {
   websocket.addEventListener("message", function(rawmessage) {
     let message = JSON.parse(rawmessage.data);
     if (message.version != version) {
-      csmismatch.innerText = 'Server version is ' + message.version + ', client version is ' + version;
+      csmismatch.innerText = 'ERROR: VERSION MISMATCH (Server: ' + message.version + ', Client: ' + version + ')';
       return
     }
     if (message.type == "user_message") {
       const messagediv = document.createElement("div");
-      messagediv.textContent = message.username + ': ' + message.message;
+      messagediv.textContent = '<' + message.username + '> ' + message.message;
       messagediv.title = message.timestamp;
       chatoutput.prepend(messagediv);
       if (message.username != username) {
