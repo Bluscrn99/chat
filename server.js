@@ -1,4 +1,4 @@
-const version = 2;
+const version = 3;
 
 
 
@@ -104,6 +104,14 @@ server.on('connection', function connection(ws) {
           output = {
             type: 'error',
             error: 'usernameHitFilter',
+            version: version,
+          }
+          ws.send(JSON.stringify(output));
+        }
+        else if (messagedata.username.trim() != messagedata.username) {
+          output = {
+            type: 'error',
+            error: 'whitespaceUsername',
             version: version,
           }
           ws.send(JSON.stringify(output));

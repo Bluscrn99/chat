@@ -1,4 +1,4 @@
-const version = 2;
+const version = 3;
 
 
 
@@ -52,7 +52,7 @@ connectbtn.addEventListener('click', function() {
     usr.style.display = 'none';
     return;
   }
-  if (usr.value != '' && usr.value != ' ') {
+  if (usr.value.trim() != "") {
     if (ipInput.value != '') {
       chatServer = ipInput.value;
     }
@@ -192,6 +192,11 @@ function connect() {
         openConnectScreen();
       } else if (message.error == 'emptyMessage') {
         // do nothing, empty message probably shouldn't be an error.
+      } else if (message.error == 'whitespaceUsername') {
+        erroroutput.innerText = '[ERROR] Username has whitespace';
+        console.log('[ERROR] Username has whitespace')
+        setTimeout(function() {erroroutput.innerText = ''}, 5000);
+        openConnectScreen();
       } else {
         erroroutput.innerText = '[ERROR] Unknown Error'
         console.log('[ERROR] Unknown Error')
